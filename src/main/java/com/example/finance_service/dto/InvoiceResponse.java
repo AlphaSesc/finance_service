@@ -17,6 +17,7 @@ public class InvoiceResponse {
     private String studentId;
     private String courseCode;
     private BigDecimal amount;
+    private String reference;
     private InvoiceStatus status;
     private LocalDateTime createdAt;
 }

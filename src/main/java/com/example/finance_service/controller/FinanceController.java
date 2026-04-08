@@ -26,4 +26,9 @@ public class FinanceController {
     public OutstandingBalanceResponse checkOutstandingBalance(@PathVariable String studentId) {
         return financeService.checkOutstandingBalance(studentId);
     }
+
+    @PutMapping("/invoices/pay")
+    public InvoiceResponse payInvoice(@RequestBody PayInvoiceRequest request) {
+        return financeService.payInvoice(request);
+    }
 }

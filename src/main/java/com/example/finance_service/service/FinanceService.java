@@ -8,6 +8,7 @@ import com.example.finance_service.exception.ResourceAlreadyExistsException;
 import com.example.finance_service.exception.ResourceNotFoundException;
 import com.example.finance_service.repository.FinanceAccountRepository;
 import com.example.finance_service.repository.InvoiceRepository;
+import com.example.finance_service.util.InvoiceReferenceGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -48,6 +49,7 @@ public class FinanceService {
                 .studentId(request.getStudentId())
                 .courseCode(request.getCourseCode())
                 .amount(request.getAmount())
+                .reference(InvoiceReferenceGenerator.generate())
                 .status(InvoiceStatus.PENDING)
                 .createdAt(LocalDateTime.now())
                 .build();
@@ -76,4 +78,33 @@ public class FinanceService {
                 .hasOutstandingBalance(hasOutstandingBalance)
                 .build();
     }
+
+    public InvoiceResponse payInvoice(PayInvoiceRequest request) {
+        Invoice invoice = invoiceRepository.findByReference(request.getReference())
+                .orElseThrow(() -> new ResourceNotFoundException("Invoice not found"));
+
+        if (invoice.getStatus() == InvoiceStatus.PAID) {
+            throw new ResourceAlreadyExistsException("Invoice is already paid");
+        }
+
+        invoice.setStatus(InvoiceStatus.PAID);
+
+        Invoice updatedInvoice = invoiceRepository.save(invoice);
+
+        return mapToInvoiceResponse(updatedInvoice);
+    }
+
+    private InvoiceResponse mapToInvoiceResponse(Invoice invoice) {
+        return InvoiceResponse.builder()
+                .id(invoice.getId())
+                .studentId(invoice.getStudentId())
+                .courseCode(invoice.getCourseCode())
+                .amount(invoice.getAmount())
+                .reference(invoice.getReference())
+                .status(invoice.getStatus())
+                .createdAt(invoice.getCreatedAt())
+                .build();
+    }
+
+
 }
