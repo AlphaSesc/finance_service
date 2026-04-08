@@ -28,6 +28,9 @@ public class Invoice {
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal amount;
 
+    @Column(name = "reference", nullable = false, unique = true)
+    private String reference;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private InvoiceStatus status;
