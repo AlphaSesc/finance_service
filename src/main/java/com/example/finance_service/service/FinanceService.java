@@ -4,6 +4,8 @@ import com.example.finance_service.dto.*;
 import com.example.finance_service.entity.FinanceAccount;
 import com.example.finance_service.entity.Invoice;
 import com.example.finance_service.entity.InvoiceStatus;
+import com.example.finance_service.entity.InvoiceType;
+import com.example.finance_service.exception.InvalidRequestException;
 import com.example.finance_service.exception.ResourceAlreadyExistsException;
 import com.example.finance_service.exception.ResourceNotFoundException;
 import com.example.finance_service.repository.FinanceAccountRepository;
@@ -45,10 +47,13 @@ public class FinanceService {
         financeAccountRepository.findByStudentId(request.getStudentId())
                 .orElseThrow(() -> new ResourceNotFoundException("Finance account not found for student"));
 
+        validateCreateInvoiceRequest(request);
+
         Invoice invoice = Invoice.builder()
                 .studentId(request.getStudentId())
                 .courseCode(request.getCourseCode())
                 .amount(request.getAmount())
+                .invoiceType(request.getInvoiceType())
                 .reference(InvoiceReferenceGenerator.generate())
                 .status(InvoiceStatus.PENDING)
                 .createdAt(LocalDateTime.now())
@@ -56,14 +61,7 @@ public class FinanceService {
 
         Invoice savedInvoice = invoiceRepository.save(invoice);
 
-        return InvoiceResponse.builder()
-                .id(savedInvoice.getId())
-                .studentId(savedInvoice.getStudentId())
-                .courseCode(savedInvoice.getCourseCode())
-                .amount(savedInvoice.getAmount())
-                .status(savedInvoice.getStatus())
-                .createdAt(savedInvoice.getCreatedAt())
-                .build();
+        return mapToInvoiceResponse(savedInvoice);
     }
 
     public OutstandingBalanceResponse checkOutstandingBalance(String studentId) {
@@ -94,11 +92,30 @@ public class FinanceService {
         return mapToInvoiceResponse(updatedInvoice);
     }
 
+    private void validateCreateInvoiceRequest(CreateInvoiceRequest request) {
+        if (request.getInvoiceType() == null) {
+            throw new InvalidRequestException("Invoice type is required");
+        }
+
+        if (request.getInvoiceType() == InvoiceType.COURSE_ENROLLMENT) {
+            if (request.getCourseCode() == null || request.getCourseCode().isBlank()) {
+                throw new InvalidRequestException("Course code is required for course enrollment invoice");
+            }
+        }
+
+        if (request.getInvoiceType() == InvoiceType.LIBRARY_FINE) {
+            if (request.getCourseCode() != null && !request.getCourseCode().isBlank()) {
+                throw new InvalidRequestException("Course code must not be provided for library fine invoice");
+            }
+        }
+    }
+
     private InvoiceResponse mapToInvoiceResponse(Invoice invoice) {
         return InvoiceResponse.builder()
                 .id(invoice.getId())
                 .studentId(invoice.getStudentId())
                 .courseCode(invoice.getCourseCode())
+                .invoiceType(invoice.getInvoiceType())
                 .amount(invoice.getAmount())
                 .reference(invoice.getReference())
                 .status(invoice.getStatus())
