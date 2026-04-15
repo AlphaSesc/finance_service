@@ -22,7 +22,7 @@ public class Invoice {
     @Column(name = "student_id", nullable = false)
     private String studentId;
 
-    @Column(name = "course_code", nullable = false)
+    @Column(name = "course_code")
     private String courseCode;
 
     @Column(nullable = false, precision = 10, scale = 2)
@@ -34,6 +34,10 @@ public class Invoice {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private InvoiceStatus status;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private InvoiceType invoiceType;
 
     @Column(nullable = false)
     private LocalDateTime createdAt;
