@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -108,6 +109,16 @@ public class FinanceService {
                 throw new InvalidRequestException("Course code must not be provided for library fine invoice");
             }
         }
+    }
+
+    public List<InvoiceResponse> getInvoicesByStudentId(String studentId) {
+        financeAccountRepository.findByStudentId(studentId)
+                .orElseThrow(() -> new ResourceNotFoundException("Finance account not found for student"));
+
+        return invoiceRepository.findByStudentIdOrderByCreatedAtDesc(studentId)
+                .stream()
+                .map(this::mapToInvoiceResponse)
+                .toList();
     }
 
     private InvoiceResponse mapToInvoiceResponse(Invoice invoice) {

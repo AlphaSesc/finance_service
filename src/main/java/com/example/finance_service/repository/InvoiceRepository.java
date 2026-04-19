@@ -18,4 +18,6 @@ public interface InvoiceRepository extends JpaRepository<Invoice, Long> {
     Optional<Invoice> findByReference(String reference);
 
     Optional<Invoice> findByStudentIdAndReference(String studentId, String reference);
+
+    List<Invoice> findByStudentIdOrderByCreatedAtDesc(String studentId);
 }
