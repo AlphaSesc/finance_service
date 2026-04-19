@@ -9,5 +9,6 @@ import lombok.*;
 @Builder
 public class PayInvoiceRequest {
 
+    private String studentId;
     private String reference;
 }

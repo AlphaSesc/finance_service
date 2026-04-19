@@ -78,7 +78,7 @@ public class FinanceService {
     }
 
     public InvoiceResponse payInvoice(PayInvoiceRequest request) {
-        Invoice invoice = invoiceRepository.findByReference(request.getReference())
+        Invoice invoice = invoiceRepository.findByStudentIdAndReference(request.getStudentId(), request.getReference())
                 .orElseThrow(() -> new ResourceNotFoundException("Invoice not found"));
 
         if (invoice.getStatus() == InvoiceStatus.PAID) {
