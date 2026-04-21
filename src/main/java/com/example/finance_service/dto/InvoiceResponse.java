@@ -12,6 +12,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+// Response DTO representing invoice details returned to clients
+// Used for displaying invoice history, payment status, and tracking information
 public class InvoiceResponse {
 
     private Long id;

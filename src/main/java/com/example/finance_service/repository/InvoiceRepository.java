@@ -7,17 +7,15 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 import java.util.Optional;
 
+// Repository for handling invoice-related database operations
 public interface InvoiceRepository extends JpaRepository<Invoice, Long> {
 
-    List<Invoice> findByStudentId(String studentId);
-
-    List<Invoice> findByStudentIdAndStatus(String studentId, InvoiceStatus status);
-
+    // Checks if a student has any invoice with a given status (e.g., unpaid invoices for graduation check)
     boolean existsByStudentIdAndStatus(String studentId, InvoiceStatus status);
 
-    Optional<Invoice> findByReference(String reference);
-
+    // Retrieves a specific invoice using studentId and unique reference (used in payment operations)
     Optional<Invoice> findByStudentIdAndReference(String studentId, String reference);
 
+    // Returns all invoices of a student sorted by latest first (used for invoice history display)
     List<Invoice> findByStudentIdOrderByCreatedAtDesc(String studentId);
 }

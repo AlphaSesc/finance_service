@@ -7,6 +7,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+// Request DTO used to process invoice payment using studentId and unique reference
 public class PayInvoiceRequest {
 
     private String studentId;

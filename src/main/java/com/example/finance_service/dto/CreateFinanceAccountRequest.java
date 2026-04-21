@@ -7,6 +7,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+// Request payload for creating a finance account from external services (e.g., Student Service)
 public class CreateFinanceAccountRequest {
 
     private String studentId;

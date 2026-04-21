@@ -7,6 +7,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+// Response DTO representing finance account details returned to clients
 public class FinanceAccountResponse {
 
     private Long id;

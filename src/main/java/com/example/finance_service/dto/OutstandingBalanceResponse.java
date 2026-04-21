@@ -7,6 +7,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+// Used to determine eligibility for actions such as graduation based on unpaid invoices
 public class OutstandingBalanceResponse {
 
     private String studentId;
